@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using BlazorShared;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -121,6 +122,17 @@ builder.Services.AddSwaggerGen(c =>
                     }
             });
 });
+
+var aiOptions = new ApplicationInsightsServiceOptions();
+aiOptions.RequestCollectionOptions.TrackExceptions = true;
+builder.Services.AddApplicationInsightsTelemetry();
+
+builder.Logging.AddApplicationInsights(
+        configureTelemetryConfiguration: (config) =>
+            config.ConnectionString = Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING"),
+            configureApplicationInsightsLoggerOptions: (options) => { }
+    );
+
 
 var app = builder.Build();
 
