@@ -44,6 +44,7 @@ resource autoscaling 'Microsoft.Insights/autoscalesettings@2022-10-01' = {
   name: 'Autoscale-${webAppName}'
   location: location
   tags: {}
+  dependsOn: [appServicePlan]
   properties: {
     enabled: true
     targetResourceUri: '/subscriptions/32de0203-f852-40a8-87b2-611e68a7e808/resourceGroups/AppService2RG/providers/Microsoft.Web/serverFarms/${appServicePlanName}'
