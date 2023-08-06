@@ -27,7 +27,8 @@ public class ExceptionMiddleware
         }
         catch (Exception ex)
         {
-      //      _logger.LogError(ex, "Unhandled error.");
+            System.Diagnostics.Trace.TraceError(ex.ToString());
+          _logger.LogError(ex, "Unhandled error.");
             await HandleExceptionAsync(httpContext, ex);        
         }
     }

@@ -5,6 +5,7 @@ using BlazorShared;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.eShopWeb;
 using Microsoft.eShopWeb.ApplicationCore.Constants;
@@ -25,12 +26,13 @@ using MinimalApi.Endpoint.Configurations.Extensions;
 using MinimalApi.Endpoint.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 builder.Services.AddEndpoints();
 
 // Use to force loading of appsettings.json of test project
 builder.Configuration.AddConfigurationFile("appsettings.test.json");
-builder.Logging.AddConsole();
 
 Microsoft.eShopWeb.Infrastructure.Dependencies.ConfigureServices(builder.Configuration, builder.Services);
 
@@ -127,13 +129,6 @@ var aiOptions = new ApplicationInsightsServiceOptions();
 aiOptions.RequestCollectionOptions.TrackExceptions = true;
 builder.Services.AddApplicationInsightsTelemetry();
 
-builder.Logging.AddApplicationInsights(
-        configureTelemetryConfiguration: (config) =>
-            config.ConnectionString = Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING"),
-            configureApplicationInsightsLoggerOptions: (options) => { }
-    );
-
-
 var app = builder.Build();
 
 app.Logger.LogInformation("PublicApi App created...");
@@ -188,6 +183,9 @@ app.MapControllers();
 app.MapEndpoints();
 
 app.Logger.LogInformation("LAUNCHING PublicApi");
+//throw new Exception("Cannot move further");
+
 app.Run();
+
 
 public partial class Program { }
