@@ -127,13 +127,6 @@ var aiOptions = new ApplicationInsightsServiceOptions();
 aiOptions.RequestCollectionOptions.TrackExceptions = true;
 builder.Services.AddApplicationInsightsTelemetry();
 
-builder.Logging.AddApplicationInsights(
-        configureTelemetryConfiguration: (config) =>
-            config.ConnectionString = Environment.GetEnvironmentVariable("APPLICATIONINSIGHTS_CONNECTION_STRING"),
-            configureApplicationInsightsLoggerOptions: (options) => { }
-    );
-
-
 var app = builder.Build();
 
 app.Logger.LogInformation("PublicApi App created...");
