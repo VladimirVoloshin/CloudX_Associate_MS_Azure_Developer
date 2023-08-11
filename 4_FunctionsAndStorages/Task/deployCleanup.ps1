@@ -1,1 +1,1 @@
-az group delete --name AppService3RG
+az group delete --name FunctionsAndStorages4RG

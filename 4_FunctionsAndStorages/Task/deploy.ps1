@@ -1,3 +1,4 @@
-az group create --name AppService3RG --location "westeurope" &&
-az deployment group create --resource-group AppService3RG --template-file ./3_MonitoringAndLogging/Task/sql.bicep
-az deployment group create --resource-group AppService3RG --template-file ./3_MonitoringAndLogging/Task/publicApi.bicep
+az group create --name FunctionsAndStorages4RG --location "westeurope" 
+az deployment group create --resource-group FunctionsAndStorages4RG --template-file ./4_FunctionsAndStorages/Task/fuction.bicep
+#az deployment group create --resource-group FunctionsAndStorages4RG --template-file ./4_FunctionsAndStorages/Task/sql.bicep
+#az deployment group create --resource-group FunctionsAndStorages4RG --template-file ./4_FunctionsAndStorages/Task/publicApi.bicep
