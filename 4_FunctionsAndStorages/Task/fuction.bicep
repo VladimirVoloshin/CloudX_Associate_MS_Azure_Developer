@@ -63,6 +63,10 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
           name: 'FUNCTIONS_WORKER_RUNTIME'
           value: functionWorkerRuntime
         }
+        {
+          name: 'ContainerName'
+          value: 'order-upload'
+        }
       ]
       ftpsState: 'FtpsOnly'
       minTlsVersion: '1.2'
