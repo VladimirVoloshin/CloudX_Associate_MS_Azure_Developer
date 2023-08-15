@@ -9,10 +9,10 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using OrderItemsReserver.Model;
 using Azure.Storage.Blobs;
 using static System.Net.Mime.MediaTypeNames;
 using System.Text;
+using Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
 
 namespace OrderItemsReserver;
 
@@ -28,7 +28,7 @@ public static class OrderItemsReserverFunction
         req.EnableBuffering(bufferThreshold: 1024 * 45, bufferLimit: 1024 * 100);
 
         string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-        var orderRequest = JsonConvert.DeserializeObject<OrderRequest>(requestBody);
+        var orderRequest = JsonConvert.DeserializeObject<OrderReservation>(requestBody);
 
         string Connection = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
         string containerName = Environment.GetEnvironmentVariable("ContainerName");

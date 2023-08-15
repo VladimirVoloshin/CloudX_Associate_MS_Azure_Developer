@@ -13,7 +13,8 @@
       "launchBrowser": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ORDER_ITEMS_RESERVER_URL": "https://orderitemsreserver-20230809.azurewebsites.net//api/OrderItemsReserverFunction?code=Vv9tIbhaS4drTWf1M0JX7VE-Ly6O2BHKuhTmKwLxdM4fAzFu89sMyw=="
       },
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
     },
@@ -22,7 +23,8 @@
       "launchBrowser": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ORDER_ITEMS_RESERVER_URL": "https://orderitemsreserver-20230809.azurewebsites.net//api/OrderItemsReserverFunction?code=Vv9tIbhaS4drTWf1M0JX7VE-Ly6O2BHKuhTmKwLxdM4fAzFu89sMyw=="
       },
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
     },
@@ -31,7 +33,8 @@
       "launchBrowser": true,
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
+        "ASPNETCORE_ENVIRONMENT": "Production",
+        "ORDER_ITEMS_RESERVER_URL": "https://orderitemsreserver-20230809.azurewebsites.net//api/OrderItemsReserverFunction?code=Vv9tIbhaS4drTWf1M0JX7VE-Ly6O2BHKuhTmKwLxdM4fAzFu89sMyw=="
       },
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
     }

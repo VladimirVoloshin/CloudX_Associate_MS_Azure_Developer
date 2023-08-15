@@ -16,6 +16,7 @@ using Microsoft.eShopWeb.Web;
 using Microsoft.eShopWeb.Web.Configuration;
 using Microsoft.eShopWeb.Web.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -93,6 +94,16 @@ builder.Services.AddScoped<HttpService>();
 builder.Services.AddBlazorServices();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+var orderReserverUrl = Environment.GetEnvironmentVariable("ORDER_ITEMS_RESERVER_URL");
+if (orderReserverUrl.IsNullOrEmpty())
+{
+    throw new ArgumentNullException("ORDER_ITEMS_RESERVER_URL");
+}
+builder.Services.AddHttpClient("OrderItemsReserverClient", httpClient =>
+{
+    httpClient.BaseAddress = new Uri(orderReserverUrl);
+});
 
 var app = builder.Build();
 
