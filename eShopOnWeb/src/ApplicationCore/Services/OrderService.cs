@@ -13,6 +13,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Text;
 using static System.Net.Mime.MediaTypeNames;
+using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.eShopWeb.ApplicationCore.Services;
 
@@ -21,6 +22,7 @@ public class OrderService : IOrderService
     private readonly IRepository<Order> _orderRepository;
     private readonly IUriComposer _uriComposer;
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly IConfiguration _configuration;
     private readonly IRepository<Basket> _basketRepository;
     private readonly IRepository<CatalogItem> _itemRepository;
 
@@ -29,12 +31,14 @@ public class OrderService : IOrderService
         IRepository<CatalogItem> itemRepository,
         IRepository<Order> orderRepository,
         IUriComposer uriComposer,
-        IHttpClientFactory httpClientFactory
+        IHttpClientFactory httpClientFactory,
+        IConfiguration configuration
     )
     {
         _orderRepository = orderRepository;
         _uriComposer = uriComposer;
         _httpClientFactory = httpClientFactory;
+        _configuration = configuration;
         _basketRepository = basketRepository;
         _itemRepository = itemRepository;
     }
@@ -74,7 +78,14 @@ public class OrderService : IOrderService
 
         await _orderRepository.AddAsync(order);
 
-        await SendOrderItemsReservationAsync(order);
+        if (Convert.ToBoolean(_configuration["OrderItemsReserver:IsEnabled"])) {
+            await SendOrderItemsReservationAsync(order);
+        }
+
+        if (Convert.ToBoolean(_configuration["DeliveryOrderProcessor:IsEnabled"]))
+        {
+            await SendDeliveryOrderProcessingAsync(order);
+        }
     }
 
     private async Task SendOrderItemsReservationAsync(Order order)
@@ -93,5 +104,23 @@ public class OrderService : IOrderService
 
         var httpClient = _httpClientFactory.CreateClient("OrderItemsReserverClient");
         await httpClient.PostAsync("", orderReservationJson);
+    }
+
+    private async Task SendDeliveryOrderProcessingAsync(Order order)
+    {
+        var orderDelivery = new OrderDeliveryProcess(
+            order.Id.ToString(),
+            order.ShipToAddress,
+            order.OrderItems.Select(x => new OrderDeliveryItem(x.Id, x.Units)).ToList(),
+            order.Total());
+
+        var orderJson = new StringContent(
+            JsonSerializer.Serialize(orderDelivery),
+            Encoding.UTF8,
+            Application.Json
+        );
+
+        var httpClient = _httpClientFactory.CreateClient("DeliveryOrderProcessorClient");
+        await httpClient.PostAsync("", orderJson);
     }
 }
