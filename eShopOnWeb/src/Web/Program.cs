@@ -95,15 +95,15 @@ builder.Services.AddBlazorServices();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-var orderReserverUrl = Environment.GetEnvironmentVariable("ORDER_ITEMS_RESERVER_URL");
-if (orderReserverUrl.IsNullOrEmpty())
-{
-    throw new ArgumentNullException("ORDER_ITEMS_RESERVER_URL");
-}
-builder.Services.AddHttpClient("OrderItemsReserverClient", httpClient =>
-{
-    httpClient.BaseAddress = new Uri(orderReserverUrl);
-});
+var orderReserverUrl = builder.Configuration["OrderItemsReserver:Url"]
+    ?? throw new ArgumentNullException("OrderItemsReserver:Url");
+builder.Services.AddHttpClient("OrderItemsReserverClient",
+    httpClient => httpClient.BaseAddress = new Uri(orderReserverUrl));
+
+var orderDeliveryProcessorUrl = builder.Configuration["DeliveryOrderProcessor:Url"]
+    ?? throw new ArgumentNullException("DeliveryOrderProcessor:Url");
+builder.Services.AddHttpClient("DeliveryOrderProcessorClient",
+    httpClient => httpClient.BaseAddress = new Uri(orderDeliveryProcessorUrl));
 
 var app = builder.Build();
 
