@@ -21,6 +21,7 @@ param identityDBName string
 param sqlAdminLogin string
 @secure()
 param sqlAdminPass string
+param appInsightsName string
 
 // KEY VAULT START
 resource kv 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
@@ -122,6 +123,10 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
           name: 'MSBuildSDKsPath'
           value: 'C:\\Program Files (x86)\\dotnet\\sdk\\7.0.305\\Sdks'
         }
+        {
+          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+          value: appInsights.properties.ConnectionString
+        }
       ]
       netFrameworkVersion: netFrameworkVersion
     }
@@ -188,7 +193,16 @@ resource publicApiApp 'Microsoft.Web/sites@2022-03-01' = {
           name: 'ASPNETCORE_ENVIRONMENT'
           value: 'Production'
         }
+        {
+          name: 'MSBuildSDKsPath'
+          value: 'C:\\Program Files (x86)\\dotnet\\sdk\\7.0.305\\Sdks'
+        }
+        {
+          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+          value: appInsights.properties.ConnectionString
+        }
       ]
+      netFrameworkVersion: netFrameworkVersion
     }
     serverFarmId: publicApiAppServicePlan.id
     httpsOnly: true
@@ -224,7 +238,7 @@ resource connectionstringsPublicApi 'Microsoft.Web/sites/config@2021-03-01' = {
 }
 // PUBLIC API END
 
-// SQL Server startzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
+// SQL Server start
 resource sqlServerInstance 'Microsoft.Sql/servers@2020-02-02-preview' = {
   name: serverName
   location: location
@@ -270,4 +284,37 @@ resource identity_database 'Microsoft.Sql/servers/databases@2020-08-01-preview' 
     minCapacity: 1
   }
 }
-//SQL Server End
+//SQL SERVER END
+
+// APP INSIGHTS START
+resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: appInsightsName
+  location: location
+  kind: 'app'
+  properties: {
+    Application_Type: 'web'
+    WorkspaceResourceId: logAnalyticsWorkspace.id
+  }
+}
+
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-08-01' = {
+  name: appInsightsName
+  location: location
+  tags: {
+    displayName: 'Log Analytics'
+    ProjectName: webAppName
+  }
+  properties: {
+    sku: {
+      name: 'PerGB2018'
+    }
+    retentionInDays: 120
+    features: {
+      searchVersion: 1
+      legacy: 0
+      enableLogAccessUsingOnlyResourcePermissions: true
+    }
+  }
+}
+
+// APP INSIGHTS END

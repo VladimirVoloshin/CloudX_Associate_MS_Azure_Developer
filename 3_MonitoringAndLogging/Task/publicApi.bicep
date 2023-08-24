@@ -37,8 +37,8 @@ resource webApp 'Microsoft.Web/sites@2022-03-01' = {
           value: 'eShopOnWeb/src/PublicApi/PublicApi.csproj'
         }
         {
-          name:'ASPNETCORE_ENVIRONMENT'
-          value:'Production'
+          name: 'ASPNETCORE_ENVIRONMENT'
+          value: 'Production'
         }
       ]
     }
@@ -128,7 +128,7 @@ resource gitsource 'Microsoft.Web/sites/sourcecontrols@2022-03-01' = {
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: appInsightsName
   location: location
-  kind:'app'
+  kind: 'app'
   properties: {
     Application_Type: 'web'
     WorkspaceResourceId: logAnalyticsWorkspace.id
