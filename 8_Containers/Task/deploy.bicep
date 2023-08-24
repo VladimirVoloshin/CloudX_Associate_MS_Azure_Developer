@@ -204,9 +204,27 @@ resource gitsourcePublicApi 'Microsoft.Web/sites/sourcecontrols@2022-03-01' = {
     isManualIntegration: true
   }
 }
+
+resource connectionstringsPublicApi 'Microsoft.Web/sites/config@2021-03-01' = {
+  name: 'connectionstrings'
+  parent: publicApiApp
+  dependsOn: [
+    kv
+  ]
+  properties: {
+    CatalogConnection: {
+      value: '@Microsoft.KeyVault(SecretUri=${reference(catalogConnectionSecretName).secretUriWithVersion})'
+      type: 'SQLServer'
+    }
+    IdentityConnection: {
+      value: '@Microsoft.KeyVault(SecretUri=${reference(identityConnectionSecretName).secretUriWithVersion})'
+      type: 'SQLServer'
+    }
+  }
+}
 // PUBLIC API END
 
-// SQL Server start
+// SQL Server startzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
 resource sqlServerInstance 'Microsoft.Sql/servers@2020-02-02-preview' = {
   name: serverName
   location: location

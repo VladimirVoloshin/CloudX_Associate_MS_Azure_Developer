@@ -9,10 +9,10 @@
       "value": "v7.0"
     },
     "branch": {
-      "value": "master"
+      "value": "containers"
     },
     "keyVaultName": {
-      "value": "keyvalue-KV"
+      "value": "containers-KV"
     },
     "keyVaultKeysPermissions": {
       "value": ["get", "list"]
@@ -30,26 +30,26 @@
       "value": "identityConnectionSecret"
     },
     "publicApiAppServicePlanName": {
-      "value": "public-keyvalue-SP"
+      "value": "public-containers-SP"
     },
     "publicApiAppName": {
-      "value": "publicApi-keyvalue-APP"
+      "value": "publicApi-containers-APP"
     },
     "publicApiSku": {
-      "value": "F1"
+      "value": "S1"
     },
 
     "webAppServicePlanName": {
-      "value": "web-keyvalue-SP"
+      "value": "web-containers-SP"
     },
     "webAppName": {
-      "value": "web-keyvalue-APP"
+      "value": "web-containers-APP"
     },
     "webAppSku": {
-      "value": "F1"
+      "value": "S1"
     },
     "serverName": {
-      "value": "sql-eShopOnWeb-keyvalueSRV"
+      "value": "sql-eShopOnWeb-containersSRV"
     },
     "catalogDbName": {
       "value": "CatalogDb"
