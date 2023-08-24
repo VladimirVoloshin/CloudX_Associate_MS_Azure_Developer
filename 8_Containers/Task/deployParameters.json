@@ -1,0 +1,67 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "gitRepoUrl": {
+      "value": "https://github.com/VladimirVoloshin/CloudX_Associate_MS_Azure_Developer"
+    },
+    "netFrameworkVersion": {
+      "value": "v7.0"
+    },
+    "branch": {
+      "value": "master"
+    },
+    "keyVaultName": {
+      "value": "keyvalue-KV"
+    },
+    "keyVaultKeysPermissions": {
+      "value": ["get", "list"]
+    },
+    "keyVaultSecretsPermissions": {
+      "value": ["get", "list"]
+    },
+    "keyVaultSku": {
+      "value": "standard"
+    },
+    "catalogConnectionSecretName": {
+      "value": "CatalogConnectionSecret"
+    },
+    "identityConnectionSecretName": {
+      "value": "identityConnectionSecret"
+    },
+    "publicApiAppServicePlanName": {
+      "value": "public-keyvalue-SP"
+    },
+    "publicApiAppName": {
+      "value": "publicApi-keyvalue-APP"
+    },
+    "publicApiSku": {
+      "value": "F1"
+    },
+
+    "webAppServicePlanName": {
+      "value": "web-keyvalue-SP"
+    },
+    "webAppName": {
+      "value": "web-keyvalue-APP"
+    },
+    "webAppSku": {
+      "value": "F1"
+    },
+    "serverName": {
+      "value": "sql-eShopOnWeb-keyvalueSRV"
+    },
+    "catalogDbName": {
+      "value": "CatalogDb"
+    },
+    "identityDBName": {
+      "value": "identity"
+    },
+    "sqlAdminLogin": {
+      "value": "sqlUser"
+    },
+    "sqlAdminPass": {
+      "value": "#JHRI@UHF842sd"
+    }
+  }
+}
