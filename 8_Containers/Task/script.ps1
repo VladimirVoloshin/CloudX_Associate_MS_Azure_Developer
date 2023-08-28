@@ -7,12 +7,13 @@ $gitRepoUrl = 'https://github.com/VladimirVoloshin/CloudX_Associate_MS_Azure_Dev
 $gitBranch = 'containers'
 $webAppDockerFilePath = 'eShopOnWeb/src/Web'
 $gitAccessToken = $Env:GITHUB_TOKEN
+#--context "$($gitRepoUrl)#$($gitBranch):$($webAppDockerFilePath)" `
 
 az acr task create `
     --registry $containerRegistryName `
     --name buildwebapp `
     --image $imageWebName `
-    --context "$($gitRepoUrl)#$($gitBranch):$($webAppDockerFilePath)" `
+    --context $gitRepoUrl `
     --file Dockerfile `
     --git-access-token $gitAccessToken
 
