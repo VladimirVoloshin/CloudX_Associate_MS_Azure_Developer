@@ -14,7 +14,7 @@ az acr task create `
     --name buildwebapp `
     --image $imageWebName `
     --context "$($gitRepoUrl)#$($gitBranch):eShopOnWeb" `
-    --file $webAppDockerFilePath `
+    --file Dockerfile `
     --git-access-token $gitAccessToken
 
 
