@@ -2,15 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "gitRepoUrl": {
-      "value": "https://github.com/VladimirVoloshin/CloudX_Associate_MS_Azure_Developer"
-    },
-    "netFrameworkVersion": {
-      "value": "v7.0"
-    },
-    "branch": {
-      "value": "containers"
-    },
     "keyVaultName": {
       "value": "containers-KV"
     },
@@ -64,6 +55,9 @@
     },
     "appInsightsName": {
       "value": "containersAI"
+    },
+    "acrSku": {
+      "value": "Basic"
     }
   }
 }
