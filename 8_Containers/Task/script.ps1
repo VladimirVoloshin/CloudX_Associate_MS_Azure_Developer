@@ -5,7 +5,7 @@ $imageWebName = 'web1linux'
 $imagePublicApiName = 'publicapilinux'
 $gitRepoUrl = 'https://github.com/VladimirVoloshin/CloudX_Associate_MS_Azure_Developer.git'
 $gitBranch = 'containers'
-$webAppDockerFilePath = '/eShopOnWeb/src/Web/Dockerfile'
+$webAppDockerFilePath = 'eShopOnWeb\src\Web\Dockerfile'
 $gitAccessToken = $Env:GITHUB_TOKEN
 #--context "$($gitRepoUrl)#$($gitBranch):$($webAppDockerFilePath)" `
 
