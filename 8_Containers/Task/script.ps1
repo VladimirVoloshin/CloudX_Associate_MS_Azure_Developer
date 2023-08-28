@@ -6,7 +6,7 @@ $publicApiName = 'publicApi-containers-APP'
 $imageWebName = 'web1linux'
 $imagePublicApiName = 'publicapilinux'
 $gitRepoUrl = 'https://github.com/VladimirVoloshin/CloudX_Associate_MS_Azure_Developer.git'
-$gitBranch = 'containers'
+$gitBranch = 'master'
 $webAppDockerFilePath = 'eShopOnWeb\src\Web\Dockerfile'
 $publicApiAppDockerFilePath = 'eShopOnWeb\src\PublicApi\Dockerfile'
 $gitAccessToken = $Env:GITHUB_TOKEN
@@ -27,21 +27,15 @@ az deployment group create --resource-group $resourceGroupName `
 ################################
 # BUILD AND PUSH CONTAINER TO ACR FOR WEB APP
 #################################
-#Set-Location ./eshopOnWeb
 docker build --pull --rm -f "src\Web\Dockerfile" -t $imageWebName .
 docker tag "$imageWebName" "$containerRegistryName.azurecr.io/$($imageWebName):latest"
 az acr login -n $containerRegistryName
 docker push "$containerRegistryName.azurecr.io/$($imageWebName):latest"
-#Set-Location ..
 
-
-#Set-Location ./eshopOnWeb
 docker build --pull --rm -f "src\PublicApi\Dockerfile" -t $imagepublicApiName .
 docker tag "$imagepublicApiName" "$containerRegistryName.azurecr.io/$($imagepublicApiName):latest"
 az acr login -n $containerRegistryName
 docker push "$containerRegistryName.azurecr.io/$($imagepublicApiName):latest"
-#Set-Location ..
-
 
 ############################################
 # CREATE WEBHOOKS FOR CONTAINERS
