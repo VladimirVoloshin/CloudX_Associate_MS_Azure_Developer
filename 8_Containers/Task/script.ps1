@@ -5,7 +5,7 @@ $imageWebName = 'web1linux'
 $imagePublicApiName = 'publicapilinux'
 $gitRepoUrl = 'https://github.com/VladimirVoloshin/CloudX_Associate_MS_Azure_Developer'
 $gitBranch = 'containers'
-$webAppDockerFilePath = 'src/Web/Dockerfile'
+$webAppDockerFilePath = 'eshopOnWeb/src/Web/Dockerfile'
 $gitAccessToken = $Env:GITHUB_TOKEN
 #--context "$($gitRepoUrl)#$($gitBranch):$($webAppDockerFilePath)" `
 
@@ -14,7 +14,7 @@ az acr task create `
     --name buildwebapp `
     --image $imageWebName `
     --context "$($gitRepoUrl)#$($gitBranch)" `
-    --file Dockerfile `
+    --file $webAppDockerFilePath `
     --git-access-token $gitAccessToken
 
 
