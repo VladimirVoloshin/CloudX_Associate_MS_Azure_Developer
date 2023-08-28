@@ -11,8 +11,8 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /app
 
 COPY *.sln .
-COPY . .
-WORKDIR /app/eShopOnWeb/src/Web
+COPY . ./
+WORKDIR /app/src/Web
 RUN dotnet restore
 
 RUN dotnet publish -c Release -o out
