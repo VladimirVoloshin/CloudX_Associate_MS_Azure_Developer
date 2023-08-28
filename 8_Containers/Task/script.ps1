@@ -13,8 +13,8 @@ az acr task create `
     --registry $containerRegistryName `
     --name buildwebapp `
     --image $imageWebName `
-    --context "$($gitRepoUrl)#$($gitBranch):$($webAppDockerFilePath)" `
-    --file "src\Web\Dockerfile" `
+    --context "$($gitRepoUrl)#$($gitBranch)" `
+    --file "eShopOnWeb\src\Web\Dockerfile" `
     --git-access-token $gitAccessToken
 
 
