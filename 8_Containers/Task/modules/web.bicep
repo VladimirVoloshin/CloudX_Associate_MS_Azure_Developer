@@ -29,9 +29,9 @@ resource app 'Microsoft.Web/sites@2020-06-01' = {
   }
   properties: {
     serverFarmId: plan.id
-    httpsOnly: true
+    //httpsOnly: true
     siteConfig: {
-      alwaysOn: true
+      //alwaysOn: true
       minTlsVersion: '1.2'
       linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/${imageWebName}:latest'
       appSettings: [
@@ -58,6 +58,10 @@ resource app 'Microsoft.Web/sites@2020-06-01' = {
         {
           name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'
           value: 'false'
+        }
+        {
+          name: 'DOCKER_ENABLE_CI'
+          value: 'true'
         }
         {
           name: 'DOCKER_REGISTRY_SERVER_PASSWORD'

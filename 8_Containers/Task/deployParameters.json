@@ -27,7 +27,7 @@
       "value": "publicApi-containers-APP"
     },
     "publicApiSku": {
-      "value": "S1"
+      "value": "F1"
     },
     "webAppServicePlanName": {
       "value": "web-containers-SP"
@@ -36,7 +36,7 @@
       "value": "web-containers-APP"
     },
     "webAppSku": {
-      "value": "S1"
+      "value": "F1"
     },
     "serverName": {
       "value": "sql-eShopOnWeb-containersSRV"

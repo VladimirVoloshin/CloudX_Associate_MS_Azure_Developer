@@ -30,15 +30,19 @@ resource app 'Microsoft.Web/sites@2020-06-01' = {
   }
   properties: {
     serverFarmId: plan.id
-    httpsOnly: true
+    //httpsOnly: true
     siteConfig: {
-      alwaysOn: true
+      // alwaysOn: true
       minTlsVersion: '1.2'
       linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/${imagePublicApiName}:latest'
       appSettings: [
         {
           name: 'ASPNETCORE_ENVIRONMENT'
           value: 'Production'
+        }
+        {
+          name: 'DOCKER_ENABLE_CI'
+          value: 'true'
         }
         {
           name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'
