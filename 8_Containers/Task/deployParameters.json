@@ -1,0 +1,63 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "keyVaultName": {
+      "value": "containers-KV"
+    },
+    "keyVaultKeysPermissions": {
+      "value": ["get", "list"]
+    },
+    "keyVaultSecretsPermissions": {
+      "value": ["get", "list"]
+    },
+    "keyVaultSku": {
+      "value": "standard"
+    },
+    "catalogConnectionSecretName": {
+      "value": "CatalogConnectionSecret"
+    },
+    "identityConnectionSecretName": {
+      "value": "identityConnectionSecret"
+    },
+    "publicApiAppServicePlanName": {
+      "value": "publicApi-containers-SP"
+    },
+    "publicApiAppName": {
+      "value": "publicApi-containers-APP"
+    },
+    "publicApiSku": {
+      "value": "F1"
+    },
+    "webAppServicePlanName": {
+      "value": "web-containers-SP"
+    },
+    "webAppName": {
+      "value": "web-containers-APP"
+    },
+    "webAppSku": {
+      "value": "F1"
+    },
+    "serverName": {
+      "value": "sql-eShopOnWeb-containersSRV"
+    },
+    "catalogDbName": {
+      "value": "CatalogDb"
+    },
+    "identityDBName": {
+      "value": "identity"
+    },
+    "sqlAdminLogin": {
+      "value": "sqlUser"
+    },
+    "sqlAdminPass": {
+      "value": "#JHRI@UHF842sd"
+    },
+    "appInsightsName": {
+      "value": "containersAI"
+    },
+    "acrSku": {
+      "value": "Basic"
+    }
+  }
+}

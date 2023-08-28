@@ -4,6 +4,7 @@ using BlazorAdmin;
 using BlazorAdmin.Services;
 using Blazored.LocalStorage;
 using BlazorShared;
+using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
@@ -105,6 +106,10 @@ var orderDeliveryProcessorUrl = builder.Configuration["DeliveryOrderProcessor:Ur
 builder.Services.AddHttpClient("DeliveryOrderProcessorClient",
     httpClient => httpClient.BaseAddress = new Uri(orderDeliveryProcessorUrl));
 
+var aiOptions = new ApplicationInsightsServiceOptions();
+aiOptions.RequestCollectionOptions.TrackExceptions = true;
+builder.Services.AddApplicationInsightsTelemetry();
+
 var app = builder.Build();
 
 app.Logger.LogInformation("App created...");
@@ -173,7 +178,7 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 app.UseRouting();
