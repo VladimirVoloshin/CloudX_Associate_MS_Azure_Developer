@@ -5,7 +5,7 @@ $imageWebName = 'web1linux'
 $imagePublicApiName = 'publicapilinux'
 $gitRepoUrl = 'https://github.com/VladimirVoloshin/CloudX_Associate_MS_Azure_Developer'
 $gitBranch = 'containers'
-$webAppDockerFilePath = 'eshopOnWeb/src/web'
+$webAppDockerFilePath = 'eShopOnWeb/src/Web'
 $gitAccessToken = $Env:GITHUB_TOKEN
 
 az acr task create `
