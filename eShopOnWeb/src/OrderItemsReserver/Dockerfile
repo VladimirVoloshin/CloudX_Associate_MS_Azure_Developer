@@ -1,0 +1,23 @@
+# To run build use
+# docker build -f ".\eShopOnWeb\src\OrderItemsReserver\Dockerfile" --force-rm -t orderitemsreserver --build-arg "BUILD_CONFIGURATION=Debug" ".\eShopOnWeb"
+FROM mcr.microsoft.com/azure-functions/dotnet:4 AS base
+WORKDIR /home/site/wwwroot
+EXPOSE 80
+
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+WORKDIR /src
+COPY ["Directory.Packages.props", "."]
+COPY ["src/OrderItemsReserver/OrderItemsReserver.csproj", "src/OrderItemsReserver/"]
+RUN dotnet restore "src/OrderItemsReserver/OrderItemsReserver.csproj"
+COPY . .
+WORKDIR "/src/src/OrderItemsReserver"
+RUN dotnet build "OrderItemsReserver.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "OrderItemsReserver.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
+WORKDIR /home/site/wwwroot
+COPY --from=publish /app/publish .
+ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
+    AzureFunctionsJobHost__Logging__Console__IsEnabled=true

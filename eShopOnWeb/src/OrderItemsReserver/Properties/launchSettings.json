@@ -2,8 +2,13 @@
   "profiles": {
     "OrderItemsReserver": {
       "commandName": "Project",
-      "commandLineArgs": "--port 7059",
-      "launchBrowser": false
+      "commandLineArgs": "--port 7154"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "httpPort": 31482,
+      "useSSL": false
     }
   }
 }
