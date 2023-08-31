@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentPrefix": {
+      "value": "messaging20230830"
+    },
+    "acrSku": {
+      "value": "Basic"
+    },
+    "keyVaultKeysPermissions": {
+      "value": ["get", "list"]
+    },
+    "keyVaultSecretsPermissions": {
+      "value": ["get", "list"]
+    },
+    "keyVaultSku": {
+      "value": "standard"
+    },
+    "serverName": {
+      "value": "sql-eShopOnWeb-containersSRV"
+    },
+    "catalogDbName": {
+      "value": "CatalogDb"
+    },
+    "identityDBName": {
+      "value": "identity"
+    },
+    "sqlAdminLogin": {
+      "value": "sqlUser"
+    },
+    "sqlAdminPass": {
+      "value": "#JHRI@UHF842sd"
+    },
+    "catalogConnectionSecretName": {
+      "value": "CatalogConnectionSecret"
+    },
+    "identityConnectionSecretName": {
+      "value": "identityConnectionSecret"
+    },
+    "webAppSku": {
+      "value": "F1"
+    }
+  }
+}

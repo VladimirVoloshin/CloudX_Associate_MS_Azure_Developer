@@ -1,0 +1,109 @@
+param location string = resourceGroup().location
+param deploymentPrefix string = 'messaging${uniqueString(resourceGroup().id)}'
+
+// acr module
+param acrSku string
+var containerRegistryName = '${deploymentPrefix}registry'
+
+// key vault module
+param keyVaultName string = '${deploymentPrefix}kvault'
+param keyVaultKeysPermissions array
+param keyVaultSecretsPermissions array
+param keyVaultSku string
+
+// sql module
+param serverName string
+param sqlAdminLogin string
+@secure()
+param sqlAdminPass string
+param catalogConnectionSecretName string
+param identityConnectionSecretName string
+param catalogDbName string
+param identityDBName string
+
+// web module
+param imageWebName string
+param webAppSku string
+param webAppName string = '${deploymentPrefix}-web-app'
+
+param secretCatalogConnStringRefName string = 'secretCatalogConnStringRes'
+
+// function module
+param orderItemsReserverImageName string
+
+module managedIdentitiesModule 'modules/managedIdentitiesModule.bicep' = {
+  name: 'managedIdentities'
+  params: {
+    location: location
+    deploymentPrefix: deploymentPrefix
+  }
+}
+
+module keyVaultModule 'modules/keyVaultModule.bicep' = {
+  name: 'keyVaultModule'
+  dependsOn: [ managedIdentitiesModule ]
+  params: {
+    keyVaultKeysPermissions: keyVaultKeysPermissions
+    keyVaultSecretsPermissions: keyVaultSecretsPermissions
+    keyVaultSku: keyVaultSku
+    location: location
+    webAppIdentityId: managedIdentitiesModule.outputs.webAppManagedIdentityId
+    keyVaultName: keyVaultName
+  }
+}
+
+module sqlModule 'modules/sql.bicep' = {
+  name: 'sqlModule'
+  dependsOn: [ keyVaultModule ]
+  params: {
+    catalogConnectionSecretName: catalogConnectionSecretName
+    catalogDbName: catalogDbName
+    identityConnectionSecretName: identityConnectionSecretName
+    identityDBName: identityDBName
+    keyVaultName: keyVaultName
+    serverName: serverName
+    sqlAdminLogin: sqlAdminLogin
+    sqlAdminPass: sqlAdminPass
+    location: location
+  }
+}
+
+module acrModule './modules/containerRegistryModule.bicep' = {
+  name: 'containerRegistry'
+  params: {
+    location: location
+    containerRegistryName: containerRegistryName
+    acrSku: acrSku
+  }
+}
+
+module webAppModule './modules/webAppModule.bicep' = {
+  name: 'webApp'
+  params: {
+    catalogConnectionSecretRef: sqlModule.outputs.secretCatalogConnStringRef
+    identityConnSecretRef: sqlModule.outputs.identityConnSecretRef
+    containerRegistryName: containerRegistryName
+    deploymentPrefix: deploymentPrefix
+    imageWebName: imageWebName
+    location: location
+    webAppSku: webAppSku
+    webAppManagedIdentityId: managedIdentitiesModule.outputs.webAppManagedIdentityResId
+    keyVaultKeysPermissions: keyVaultKeysPermissions
+    keyVaultName: keyVaultName
+    keyVaultSecretsPermissions: keyVaultSecretsPermissions
+    webAppName: webAppName
+  }
+}
+
+// module orderItemsReserverFunctionModule './modules/orderItemsReservFunctionModule.bicep' = {
+//   name: 'orderItemsReserverFunction'
+//   params: {
+//     containerRegistryName: acr.outputs.containerRegistryName
+//     deploymentPrefix: deploymentPrefix
+//     imageName: orderItemsReserverImageName
+//     location: location
+//   }
+// }
+
+output containerRegistryName string = containerRegistryName
+output webAppName string = webAppName
