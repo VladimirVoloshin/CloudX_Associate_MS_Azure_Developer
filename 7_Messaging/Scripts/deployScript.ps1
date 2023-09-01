@@ -2,7 +2,10 @@ $location = 'westeurope'
 $resourceGroupName = 'Messaging7RG'
 $orderItemsReserverImageName = 'ordritemsres'
 $imageWebName = 'web1linux'
-
+$gitRepoUrl = 'https://github.com/VladimirVoloshin/CloudX_Associate_MS_Azure_Developer.git'
+$gitBranch = 'messaging'
+$gitAccessToken = $Env:GITHUB_TOKEN
+$webAppDockerFilePath = 'eShopOnWeb\src\Web\Dockerfile'
 ################################
 # CREATE RESOURCE GROUP
 ################################
@@ -32,6 +35,17 @@ $webAppName = $result.properties.outputs.webAppName.value
 # docker tag "$imageWebName" "$containerRegistryName.azurecr.io/$($imageWebName):latest"
 # az acr login -n $containerRegistryName
 # docker push "$containerRegistryName.azurecr.io/$($imageWebName):latest"
+
+# ############################################
+# # CREATE TASKS FOR CONTAINERS
+# ############################################
+az acr task create `
+        --registry $containerRegistryName `
+        --name buildwebApp `
+        --image "$($imageWebName):latest" `
+        --context "$($gitRepoUrl)#$($gitBranch)" `
+        --file $webAppDockerFilePath `
+        --git-access-token $gitAccessToken
 
 
 ############################################
