@@ -26,28 +26,14 @@ param imageWebName string
 param webAppSku string
 param webAppName string = '${deploymentPrefix}-web-app'
 
-param secretCatalogConnStringRefName string = 'secretCatalogConnStringRes'
-
 // function module
 param orderItemsReserverImageName string
 
-module managedIdentitiesModule 'modules/managedIdentitiesModule.bicep' = {
-  name: 'managedIdentities'
-  params: {
-    location: location
-    deploymentPrefix: deploymentPrefix
-  }
-}
-
 module keyVaultModule 'modules/keyVaultModule.bicep' = {
   name: 'keyVaultModule'
-  dependsOn: [ managedIdentitiesModule ]
   params: {
-    keyVaultKeysPermissions: keyVaultKeysPermissions
-    keyVaultSecretsPermissions: keyVaultSecretsPermissions
     keyVaultSku: keyVaultSku
     location: location
-    webAppIdentityId: managedIdentitiesModule.outputs.webAppManagedIdentityId
     keyVaultName: keyVaultName
   }
 }
@@ -87,7 +73,6 @@ module webAppModule './modules/webAppModule.bicep' = {
     imageWebName: imageWebName
     location: location
     webAppSku: webAppSku
-    webAppManagedIdentityId: managedIdentitiesModule.outputs.webAppManagedIdentityResId
     keyVaultKeysPermissions: keyVaultKeysPermissions
     keyVaultName: keyVaultName
     keyVaultSecretsPermissions: keyVaultSecretsPermissions

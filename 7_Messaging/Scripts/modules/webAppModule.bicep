@@ -4,9 +4,10 @@ param webAppName string
 param webAppSku string
 param containerRegistryName string
 param imageWebName string
-param webAppManagedIdentityId string
 
+@secure()
 param catalogConnectionSecretRef string
+@secure()
 param identityConnSecretRef string
 param tenantId string = subscription().tenantId
 
@@ -34,9 +35,6 @@ resource app 'Microsoft.Web/sites@2020-06-01' = {
   kind: 'app,linux,container'
   identity: {
     type: 'SystemAssigned'
-    // userAssignedIdentities: {
-    //   '${webAppManagedIdentityId}': {}
-    // }
   }
   properties: {
     serverFarmId: plan.id
