@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "deploymentPrefix": {
-      "value": "messaging20230830"
+      "value": "messaging7"
     },
     "acrSku": {
       "value": "Basic"
@@ -18,7 +18,7 @@
       "value": "standard"
     },
     "serverName": {
-      "value": "sql-eShopOnWeb-containersSRV"
+      "value": "eShopOnWeb-sql-server"
     },
     "catalogDbName": {
       "value": "CatalogDb"
@@ -40,6 +40,9 @@
     },
     "webAppSku": {
       "value": "F1"
+    },
+    "storageAccountType": {
+      "value": "Standard_LRS"
     }
   }
 }

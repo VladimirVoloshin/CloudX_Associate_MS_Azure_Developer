@@ -29,30 +29,33 @@ param webAppName string = '${deploymentPrefix}-web-app'
 // function module
 param orderItemsReserverImageName string
 
-module keyVaultModule 'modules/keyVaultModule.bicep' = {
-  name: 'keyVaultModule'
-  params: {
-    keyVaultSku: keyVaultSku
-    location: location
-    keyVaultName: keyVaultName
-  }
-}
+// storage account module
+param storageAccountType string
 
-module sqlModule 'modules/sql.bicep' = {
-  name: 'sqlModule'
-  dependsOn: [ keyVaultModule ]
-  params: {
-    catalogConnectionSecretName: catalogConnectionSecretName
-    catalogDbName: catalogDbName
-    identityConnectionSecretName: identityConnectionSecretName
-    identityDBName: identityDBName
-    keyVaultName: keyVaultName
-    serverName: serverName
-    sqlAdminLogin: sqlAdminLogin
-    sqlAdminPass: sqlAdminPass
-    location: location
-  }
-}
+// module keyVaultModule 'modules/keyVaultModule.bicep' = {
+//   name: 'keyVaultModule'
+//   params: {
+//     keyVaultSku: keyVaultSku
+//     location: location
+//     keyVaultName: keyVaultName
+//   }
+// }
+
+// module sqlModule 'modules/sql.bicep' = {
+//   name: 'sqlModule'
+//   dependsOn: [ keyVaultModule ]
+//   params: {
+//     catalogConnectionSecretName: catalogConnectionSecretName
+//     catalogDbName: catalogDbName
+//     identityConnectionSecretName: identityConnectionSecretName
+//     identityDBName: identityDBName
+//     keyVaultName: keyVaultName
+//     serverName: serverName
+//     sqlAdminLogin: sqlAdminLogin
+//     sqlAdminPass: sqlAdminPass
+//     location: location
+//   }
+// }
 
 module acrModule './modules/containerRegistryModule.bicep' = {
   name: 'containerRegistry'
@@ -63,32 +66,43 @@ module acrModule './modules/containerRegistryModule.bicep' = {
   }
 }
 
-module webAppModule './modules/webAppModule.bicep' = {
-  name: 'webApp'
+// module webAppModule './modules/webAppModule.bicep' = {
+//   name: 'webApp'
+//   params: {
+//     catalogConnectionSecretRef: sqlModule.outputs.secretCatalogConnStringRef
+//     identityConnSecretRef: sqlModule.outputs.identityConnSecretRef
+//     containerRegistryName: containerRegistryName
+//     deploymentPrefix: deploymentPrefix
+//     imageWebName: imageWebName
+//     location: location
+//     webAppSku: webAppSku
+//     keyVaultKeysPermissions: keyVaultKeysPermissions
+//     keyVaultName: keyVaultName
+//     keyVaultSecretsPermissions: keyVaultSecretsPermissions
+//     webAppName: webAppName
+//   }
+// }
+
+module storageAccountModule './modules/storageAccountModule.bicep' = {
+  name: 'storageAccountModule'
   params: {
-    catalogConnectionSecretRef: sqlModule.outputs.secretCatalogConnStringRef
-    identityConnSecretRef: sqlModule.outputs.identityConnSecretRef
-    containerRegistryName: containerRegistryName
     deploymentPrefix: deploymentPrefix
-    imageWebName: imageWebName
     location: location
-    webAppSku: webAppSku
-    keyVaultKeysPermissions: keyVaultKeysPermissions
-    keyVaultName: keyVaultName
-    keyVaultSecretsPermissions: keyVaultSecretsPermissions
-    webAppName: webAppName
+    storageAccountType: storageAccountType
   }
 }
 
-// module orderItemsReserverFunctionModule './modules/orderItemsReservFunctionModule.bicep' = {
-//   name: 'orderItemsReserverFunction'
-//   params: {
-//     containerRegistryName: acr.outputs.containerRegistryName
-//     deploymentPrefix: deploymentPrefix
-//     imageName: orderItemsReserverImageName
-//     location: location
-//   }
-// }
+module orderItemsReserverFunctionModule './modules/orderItemsReservFunctionModule.bicep' = {
+  name: 'orderItemsReserverFunction'
+  dependsOn: [ storageAccountModule ]
+  params: {
+    containerRegistryName: acrModule.outputs.containerRegistryName
+    deploymentPrefix: deploymentPrefix
+    imageName: orderItemsReserverImageName
+    location: location
+    storageAccountName: storageAccountModule.outputs.storageAccountName
+  }
+}
 
 output containerRegistryName string = containerRegistryName
 output webAppName string = webAppName
