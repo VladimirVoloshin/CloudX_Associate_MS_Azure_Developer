@@ -3,30 +3,39 @@ using Azure.Storage.Blobs;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Azure.Messaging.ServiceBus;
 
 namespace OrderItemsReserver;
 
 public class OrderItemsReserverFunction
 {
     private readonly ILogger _logger;
+    private readonly IConfiguration _configuration;
 
-    public OrderItemsReserverFunction(ILoggerFactory loggerFactory)
+    public OrderItemsReserverFunction(ILoggerFactory loggerFactory, IConfiguration configuration)
     {
         _logger = loggerFactory.CreateLogger<OrderItemsReserverFunction>();
+        _configuration = configuration;
     }
 
     [Function("OrderItemsReserverFunction")]
-    public HttpResponseData Run([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req)
+    public void Run([ServiceBusTrigger(queueName:"Messaging:OrderServiceBus:OrderCreatedQueue", Connection = "Messaging:OrderServiceBus:ConnectionString")]
+    string orderCreatedMessage,
+    Int32 deliveryCount,
+    DateTime enqueuedTimeUtc,
+    string messageId,
+    ILogger log)
     {
         _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-        var requestBody = new StreamReader(req.Body).ReadToEnd();
-        var orderRequest = JsonConvert.DeserializeObject<OrderReservation>(requestBody);
+        var requestBody = new StreamReader(orderCreatedMessage).ReadToEnd();
+        var orderRequest = JsonConvert.DeserializeObject<OrderCreatedMessage>(requestBody);
 
-        string Connection = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
-        string containerName = Environment.GetEnvironmentVariable("ContainerName");
+        var Connection = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
+        var containerName = Environment.GetEnvironmentVariable("ContainerName");
 
         var blobClient = new BlobContainerClient(Connection, containerName);
         blobClient.CreateIfNotExists();
@@ -37,10 +46,6 @@ public class OrderItemsReserverFunction
         Stream stream = new MemoryStream(byteArray);
         blob.Upload(stream);
 
-        var response = req.CreateResponse();
-        response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
-        response.WriteString($"Order:{orderRequest.OrderId} uploaded successfylly");
-        return response;
     }
 
 }

@@ -4,6 +4,10 @@ param location string
 param containerRegistryName string
 param imageName string
 param storageAccountName string
+param serviceBusConnStrRef string
+param serviceBusOrderCreatedQueueName string
+param keyVaultName string
+param orderResItemsFunctionUrlSecretName string
 
 var appServicePlanName = '${functionPrefix}-plan'
 var functionName = '${functionPrefix}-func'
@@ -82,8 +86,30 @@ resource orderItemsReserverFunction 'Microsoft.Web/sites@2022-09-01' = {
           name: 'WEBSITES_ENABLE_APP_SERVICE_STORAGE'
           value: 'false'
         }
+        {
+          name: 'MESSAGING__ORDER_SERVICEBUS__CONNECTION_STRING'
+          value: serviceBusConnStrRef
+        }
+        {
+          name: 'MESSAGING__ORDER_SERVICEBUS__ORDER_CREATED_QUEUE'
+          value: serviceBusOrderCreatedQueueName
+        }
       ]
       linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/${imageName}:latest'
     }
   }
 }
+
+resource keyVaultRef 'Microsoft.KeyVault/vaults@2023-02-01' existing = {
+  name: keyVaultName
+}
+
+resource orderResItemsFunctionCodeSecret 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
+  parent: keyVaultRef
+  name: orderResItemsFunctionUrlSecretName
+  properties: {
+    value: 'https://${functionName}.azurewebsites.net//api/OrderItemsReserverFunction?code=${storageAccountRef.listKeys().keys[0]}'
+  }
+}
+
+output orderItemsResFunctionUrlSecretRef string = '@Microsoft.KeyVault(SecretUri=${reference(orderResItemsFunctionUrlSecretName).secretUriWithVersion})'

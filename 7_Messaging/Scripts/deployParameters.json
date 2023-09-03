@@ -30,7 +30,7 @@
       "value": "sqlUser"
     },
     "sqlAdminPass": {
-      "value": "#JHRI@UHF842sd"
+      "value": "SuPP3RSecReTP@dMiN@ssw0rd"
     },
     "catalogConnectionSecretName": {
       "value": "CatalogConnectionSecret"
@@ -43,6 +43,15 @@
     },
     "storageAccountType": {
       "value": "Standard_LRS"
+    },
+    "serviceBusOrderCreatedQueueName": {
+      "value": "ordercreatedqueue"
+    },
+    "serviceBusOrderConnNameSecret": {
+      "value": "servicebusorderconnnamesecret"
+    },
+    "orderResItemsFunctionUrlSecretName": {
+      "value": "orderResItemsFunctionUrl"
     }
   }
 }

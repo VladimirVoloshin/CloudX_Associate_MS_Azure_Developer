@@ -28,34 +28,51 @@ param webAppName string = '${deploymentPrefix}-web-app'
 
 // function module
 param orderItemsReserverImageName string
-
+param orderResItemsFunctionUrlSecretName string
 // storage account module
 param storageAccountType string
 
-// module keyVaultModule 'modules/keyVaultModule.bicep' = {
-//   name: 'keyVaultModule'
-//   params: {
-//     keyVaultSku: keyVaultSku
-//     location: location
-//     keyVaultName: keyVaultName
-//   }
-// }
+// service bus
+param serviceBusOrderCreatedQueueName string
+@secure()
+param serviceBusOrderConnNameSecret string
 
-// module sqlModule 'modules/sql.bicep' = {
-//   name: 'sqlModule'
-//   dependsOn: [ keyVaultModule ]
-//   params: {
-//     catalogConnectionSecretName: catalogConnectionSecretName
-//     catalogDbName: catalogDbName
-//     identityConnectionSecretName: identityConnectionSecretName
-//     identityDBName: identityDBName
-//     keyVaultName: keyVaultName
-//     serverName: serverName
-//     sqlAdminLogin: sqlAdminLogin
-//     sqlAdminPass: sqlAdminPass
-//     location: location
-//   }
-// }
+module keyVaultModule 'modules/keyVaultModule.bicep' = {
+  name: 'keyVaultModule'
+  params: {
+    keyVaultSku: keyVaultSku
+    location: location
+    keyVaultName: keyVaultName
+  }
+}
+
+module serviceBusModule 'modules/serviceBusModule.bicep' = {
+  name: 'ServiceBusModule'
+  dependsOn: [ keyVaultModule ]
+  params: {
+    location: location
+    serviceBusOrderCreatedQueueName: serviceBusOrderCreatedQueueName
+    keyVaultName: keyVaultName
+    serviceBusOrderConnNameSecret: serviceBusOrderConnNameSecret
+    deploymentPrefix: deploymentPrefix
+  }
+}
+
+module sqlModule 'modules/sql.bicep' = {
+  name: 'sqlModule'
+  dependsOn: [ keyVaultModule ]
+  params: {
+    catalogConnectionSecretName: catalogConnectionSecretName
+    catalogDbName: catalogDbName
+    identityConnectionSecretName: identityConnectionSecretName
+    identityDBName: identityDBName
+    keyVaultName: keyVaultName
+    serverName: serverName
+    sqlAdminLogin: sqlAdminLogin
+    sqlAdminPass: sqlAdminPass
+    location: location
+  }
+}
 
 module acrModule './modules/containerRegistryModule.bicep' = {
   name: 'containerRegistry'
@@ -66,22 +83,25 @@ module acrModule './modules/containerRegistryModule.bicep' = {
   }
 }
 
-// module webAppModule './modules/webAppModule.bicep' = {
-//   name: 'webApp'
-//   params: {
-//     catalogConnectionSecretRef: sqlModule.outputs.secretCatalogConnStringRef
-//     identityConnSecretRef: sqlModule.outputs.identityConnSecretRef
-//     containerRegistryName: containerRegistryName
-//     deploymentPrefix: deploymentPrefix
-//     imageWebName: imageWebName
-//     location: location
-//     webAppSku: webAppSku
-//     keyVaultKeysPermissions: keyVaultKeysPermissions
-//     keyVaultName: keyVaultName
-//     keyVaultSecretsPermissions: keyVaultSecretsPermissions
-//     webAppName: webAppName
-//   }
-// }
+module webAppModule './modules/webAppModule.bicep' = {
+  name: 'webApp'
+  params: {
+    catalogConnectionSecretRef: sqlModule.outputs.secretCatalogConnStringRef
+    identityConnSecretRef: sqlModule.outputs.identityConnSecretRef
+    containerRegistryName: containerRegistryName
+    deploymentPrefix: deploymentPrefix
+    imageWebName: imageWebName
+    location: location
+    webAppSku: webAppSku
+    keyVaultKeysPermissions: keyVaultKeysPermissions
+    keyVaultName: keyVaultName
+    keyVaultSecretsPermissions: keyVaultSecretsPermissions
+    webAppName: webAppName
+    serviceBusConnStrRef: serviceBusModule.outputs.serviceBusConnStrRef
+    serviceBusOrderCreatedQueueName: serviceBusOrderCreatedQueueName
+    orderItemsResFunctionUrlSecretRef: orderItemsReserverFunctionModule.outputs.orderItemsResFunctionUrlSecretRef
+  }
+}
 
 module storageAccountModule './modules/storageAccountModule.bicep' = {
   name: 'storageAccountModule'
@@ -101,6 +121,10 @@ module orderItemsReserverFunctionModule './modules/orderItemsReservFunctionModul
     imageName: orderItemsReserverImageName
     location: location
     storageAccountName: storageAccountModule.outputs.storageAccountName
+    serviceBusConnStrRef: serviceBusModule.outputs.serviceBusConnStrRef
+    serviceBusOrderCreatedQueueName: serviceBusOrderCreatedQueueName
+    keyVaultName: keyVaultName
+    orderResItemsFunctionUrlSecretName: orderResItemsFunctionUrlSecretName
   }
 }
 

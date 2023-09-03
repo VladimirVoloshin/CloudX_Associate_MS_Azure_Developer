@@ -2,20 +2,20 @@
 
 namespace Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
 
-public class OrderReservation
+public class OrderCreatedMessage
 {
-    public OrderReservation(int orderId, List<OrderItemReservation> orderRequestItems)
+    public OrderCreatedMessage(int orderId, List<OrderItemCreatedMessage> orderRequestItems)
     {
         OrderId = orderId;
         OrderRequestItems = orderRequestItems;
     }
     public int OrderId { get; }
-    public List<OrderItemReservation> OrderRequestItems { get;}
+    public List<OrderItemCreatedMessage> OrderRequestItems { get;}
 }
 
-public class OrderItemReservation
+public class OrderItemCreatedMessage
 {
-    public OrderItemReservation(int itemId, int quantity)
+    public OrderItemCreatedMessage(int itemId, int quantity)
     {
         ItemId = itemId;
         Quantity = quantity;

@@ -4,6 +4,8 @@ param webAppName string
 param webAppSku string
 param containerRegistryName string
 param imageWebName string
+param serviceBusConnStrRef string
+param serviceBusOrderCreatedQueueName string
 
 @secure()
 param catalogConnectionSecretRef string
@@ -15,6 +17,9 @@ param keyVaultKeysPermissions array
 param keyVaultSecretsPermissions array
 
 param keyVaultName string
+
+@secure()
+param orderItemsResFunctionUrlSecretRef string
 
 resource plan 'Microsoft.Web/serverfarms@2020-06-01' = {
   name: '${deploymentPrefix}-web-plan'
@@ -50,11 +55,11 @@ resource app 'Microsoft.Web/sites@2020-06-01' = {
         }
         {
           name: 'OrderItemsReserver__Url'
-          value: ''
+          value: orderItemsResFunctionUrlSecretRef
         }
         {
           name: 'OrderItemsReserver__IsEnabled'
-          value: 'false'
+          value: 'true'
         }
         {
           name: 'DeliveryOrderProcessor__Url'
@@ -83,6 +88,14 @@ resource app 'Microsoft.Web/sites@2020-06-01' = {
         {
           name: 'DOCKER_REGISTRY_SERVER_USERNAME'
           value: containerRegistryName
+        }
+        {
+          name: 'MESSAGING__ORDER_SERVICEBUS__CONNECTION_STRING'
+          value: serviceBusConnStrRef
+        }
+        {
+          name: 'MESSAGING__ORDER_SERVICEBUS__ORDER_CREATED_QUEUE'
+          value: serviceBusOrderCreatedQueueName
         }
       ]
     }
@@ -117,5 +130,31 @@ resource accessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@2019-09-01' = 
         }
       }
     ]
+  }
+}
+
+resource containerFileLogging 'Microsoft.Web/sites/config@2022-09-01' = {
+  name: 'logs'
+  kind: 'string'
+  parent: app
+  properties: {
+    applicationLogs: {
+      fileSystem: {
+        level: 'Information'
+      }
+    }
+    detailedErrorMessages: {
+      enabled: true
+    }
+    failedRequestsTracing: {
+      enabled: true
+    }
+    httpLogs: {
+      fileSystem: {
+        enabled: true
+        retentionInDays: 1
+        retentionInMb: 35
+      }
+    }
   }
 }
