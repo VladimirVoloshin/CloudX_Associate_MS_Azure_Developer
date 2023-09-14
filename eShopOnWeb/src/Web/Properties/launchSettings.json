@@ -14,10 +14,10 @@
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "OrderItemsReserver__Url": "https://orderitemsreserver-20230809.azurewebsites.net//api/OrderItemsReserverFunction?code=Vv9tIbhaS4drTWf1M0JX7VE-Ly6O2BHKuhTmKwLxdM4fAzFu89sMyw==",
-        "OrderItemsReserver__IsEnabled": "false",
+        "OrderItemsReserver__Url": "https://messaging7-ordires-func.azurewebsites.net/api/OrderItemsReserverFunction?code=Swjk-tbAlrvMOM09d9ydD9MXnVb9mtV0Ku59cCJJAqclAzFuDayZgA==",
+        "OrderItemsReserver__IsEnabled": "true",
         "DeliveryOrderProcessor__Url": "http://localhost:7038/api/DeliveryOrderProcessorFunction",
-        "DeliveryOrderProcessor__IsEnabled": "true"
+        "DeliveryOrderProcessor__IsEnabled": "false"
       },
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
     },

@@ -8,6 +8,9 @@ param serviceBusConnStrRef string
 param serviceBusOrderCreatedQueueName string
 param keyVaultName string
 param orderResItemsFunctionUrlSecretName string
+param tenantId string = subscription().tenantId
+param keyVaultKeysPermissions array
+param keyVaultSecretsPermissions array
 
 var appServicePlanName = '${functionPrefix}-plan'
 var functionName = '${functionPrefix}-func'
@@ -49,6 +52,10 @@ resource orderItemsReserverFunction 'Microsoft.Web/sites@2022-09-01' = {
         {
           name: 'AzureWebJobsStorage'
           value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccountRef.listKeys().keys[0].value}'
+        }
+        {
+          name: 'ContainerName'
+          value: 'order-upload'
         }
         {
           name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
@@ -102,6 +109,22 @@ resource orderItemsReserverFunction 'Microsoft.Web/sites@2022-09-01' = {
 
 resource keyVaultRef 'Microsoft.KeyVault/vaults@2023-02-01' existing = {
   name: keyVaultName
+}
+
+resource accessPolicies 'Microsoft.KeyVault/vaults/accessPolicies@2019-09-01' = {
+  name: '${keyVaultName}/add'
+  properties: {
+    accessPolicies: [
+      {
+        objectId: orderItemsReserverFunction.identity.principalId
+        tenantId: tenantId
+        permissions: {
+          keys: keyVaultKeysPermissions
+          secrets: keyVaultSecretsPermissions
+        }
+      }
+    ]
+  }
 }
 
 resource orderResItemsFunctionCodeSecret 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {

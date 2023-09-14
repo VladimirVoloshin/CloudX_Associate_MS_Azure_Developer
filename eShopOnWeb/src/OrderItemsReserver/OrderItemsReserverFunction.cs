@@ -22,7 +22,7 @@ public class OrderItemsReserverFunction
     }
 
     [Function("OrderItemsReserverFunction")]
-    public void Run([ServiceBusTrigger(queueName:"Messaging:OrderServiceBus:OrderCreatedQueue", Connection = "Messaging:OrderServiceBus:ConnectionString")]
+    public void Run([ServiceBusTrigger(queueName:"Messaging:OrderServicebus:OrderCreatedQueue", Connection = "Messaging:OrderServicebus:ConnectionString")]
     string orderCreatedMessage,
     Int32 deliveryCount,
     DateTime enqueuedTimeUtc,
@@ -32,7 +32,14 @@ public class OrderItemsReserverFunction
         _logger.LogInformation("C# HTTP trigger function processed a request.");
 
         var requestBody = new StreamReader(orderCreatedMessage).ReadToEnd();
+        _logger.LogInformation("Function received a request: " + requestBody);
+
         var orderRequest = JsonConvert.DeserializeObject<OrderCreatedMessage>(requestBody);
+        if (orderRequest == null)
+        {
+            _logger.LogError("Unable to desirialize orderRequest");
+            return;
+        }
 
         var Connection = Environment.GetEnvironmentVariable("AzureWebJobsStorage");
         var containerName = Environment.GetEnvironmentVariable("ContainerName");

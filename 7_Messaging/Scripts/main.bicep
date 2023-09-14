@@ -125,6 +125,8 @@ module orderItemsReserverFunctionModule './modules/orderItemsReservFunctionModul
     serviceBusOrderCreatedQueueName: serviceBusOrderCreatedQueueName
     keyVaultName: keyVaultName
     orderResItemsFunctionUrlSecretName: orderResItemsFunctionUrlSecretName
+    keyVaultKeysPermissions: keyVaultKeysPermissions
+    keyVaultSecretsPermissions: keyVaultSecretsPermissions
   }
 }
 
