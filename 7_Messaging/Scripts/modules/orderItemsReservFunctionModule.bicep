@@ -11,6 +11,7 @@ param orderResItemsFunctionUrlSecretName string
 param tenantId string = subscription().tenantId
 param keyVaultKeysPermissions array
 param keyVaultSecretsPermissions array
+param appInsightsConnRef string
 
 var appServicePlanName = '${functionPrefix}-plan'
 var functionName = '${functionPrefix}-func'
@@ -100,6 +101,10 @@ resource orderItemsReserverFunction 'Microsoft.Web/sites@2022-09-01' = {
         {
           name: 'MESSAGING__ORDER_SERVICEBUS__ORDER_CREATED_QUEUE'
           value: serviceBusOrderCreatedQueueName
+        }
+        {
+          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+          value: appInsightsConnRef
         }
       ]
       linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/${imageName}:latest'

@@ -52,6 +52,15 @@
     },
     "orderResItemsFunctionUrlSecretName": {
       "value": "orderResItemsFunctionUrl"
+    },
+    "appInsightsConnStrSecretName": {
+      "value": "appInsightsConnStrSecret"
+    },
+    "appInsightsName": {
+      "value": "appInsights"
+    },
+    "appInsightsProjName": {
+      "value": "LogsForWebAppsAndFunctionsApps"
     }
   }
 }

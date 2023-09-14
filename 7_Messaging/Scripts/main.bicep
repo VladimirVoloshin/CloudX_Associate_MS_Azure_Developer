@@ -11,6 +11,11 @@ param keyVaultKeysPermissions array
 param keyVaultSecretsPermissions array
 param keyVaultSku string
 
+// app insights module
+param appInsightsConnStrSecretName string
+param appInsightsName string
+param appInsightsProjName string
+
 // sql module
 param serverName string
 param sqlAdminLogin string
@@ -44,6 +49,17 @@ module keyVaultModule 'modules/keyVaultModule.bicep' = {
     location: location
     keyVaultName: keyVaultName
   }
+}
+
+module appInsightsModule 'modules/appInsightsModule.bicep' = {
+  name: 'appInsightsModule'
+  dependsOn: [ keyVaultModule ]
+  params: {
+    appInsightsConnStrSecretName: appInsightsConnStrSecretName
+    appInsightsName: appInsightsName
+    appInsightsProjName: appInsightsProjName
+    keyVaultName: keyVaultName
+    location: location }
 }
 
 module serviceBusModule 'modules/serviceBusModule.bicep' = {
@@ -100,6 +116,7 @@ module webAppModule './modules/webAppModule.bicep' = {
     serviceBusConnStrRef: serviceBusModule.outputs.serviceBusConnStrRef
     serviceBusOrderCreatedQueueName: serviceBusOrderCreatedQueueName
     orderItemsResFunctionUrlSecretRef: orderItemsReserverFunctionModule.outputs.orderItemsResFunctionUrlSecretRef
+    appInsightsConnRef: appInsightsModule.outputs.appInsightsConnRef
   }
 }
 
@@ -127,6 +144,7 @@ module orderItemsReserverFunctionModule './modules/orderItemsReservFunctionModul
     orderResItemsFunctionUrlSecretName: orderResItemsFunctionUrlSecretName
     keyVaultKeysPermissions: keyVaultKeysPermissions
     keyVaultSecretsPermissions: keyVaultSecretsPermissions
+    appInsightsConnRef: appInsightsModule.outputs.appInsightsConnRef
   }
 }
 

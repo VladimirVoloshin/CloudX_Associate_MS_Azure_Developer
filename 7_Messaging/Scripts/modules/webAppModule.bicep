@@ -6,6 +6,7 @@ param containerRegistryName string
 param imageWebName string
 param serviceBusConnStrRef string
 param serviceBusOrderCreatedQueueName string
+param appInsightsConnRef string
 
 @secure()
 param catalogConnectionSecretRef string
@@ -96,6 +97,10 @@ resource app 'Microsoft.Web/sites@2020-06-01' = {
         {
           name: 'MESSAGING__ORDER_SERVICEBUS__ORDER_CREATED_QUEUE'
           value: serviceBusOrderCreatedQueueName
+        }
+        {
+          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+          value: appInsightsConnRef
         }
       ]
     }
