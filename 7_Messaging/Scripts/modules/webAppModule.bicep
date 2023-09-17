@@ -91,15 +91,15 @@ resource app 'Microsoft.Web/sites@2020-06-01' = {
           value: containerRegistryName
         }
         {
-          name: 'MESSAGING__ORDER_SERVICEBUS__CONNECTION_STRING'
+          name: 'Messaging__OrderServicebus__ConnectionString'
           value: serviceBusConnStrRef
         }
         {
-          name: 'MESSAGING__ORDER_SERVICEBUS__ORDER_CREATED_QUEUE'
+          name: 'Messaging__OrderServicebus__OrderCreatedQueue'
           value: serviceBusOrderCreatedQueueName
         }
         {
-          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+          name: 'ApplicationInsights__ConnectionString'
           value: appInsightsConnRef
         }
       ]

@@ -84,7 +84,8 @@ public class OrderService : IOrderService
 
         await _orderRepository.AddAsync(order);
 
-        if (Convert.ToBoolean(_configuration["OrderItemsReserver:IsEnabled"])) {
+        if (Convert.ToBoolean(_configuration["OrderItemsReserver:IsEnabled"]))
+        {
             await SendOrderItemsReservationAsync(order);
         }
 
@@ -118,9 +119,12 @@ public class OrderService : IOrderService
         try
         {
             var serviceBusConnStr = _configuration["Messaging:OrderServiceBus:ConnectionString"];
+            var orderCreatedQueue = _configuration["Messaging:OrderServiceBus:OrderCreatedQueue"];
             _log.LogInformation($"Service bus connection string:{serviceBusConnStr}");
+            _log.LogInformation($"Order created queue:{orderCreatedQueue}");
+
             await using var client = new ServiceBusClient(serviceBusConnStr);
-            ServiceBusSender sender = client.CreateSender(_configuration["Messaging:OrderServiceBus:OrderCreatedQueue"]);
+            ServiceBusSender sender = client.CreateSender(orderCreatedQueue);
 
 
             var orderReservationItems = order.OrderItems

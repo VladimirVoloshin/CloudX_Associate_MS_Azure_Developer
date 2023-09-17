@@ -34,6 +34,7 @@ param webAppName string = '${deploymentPrefix}-web-app'
 // function module
 param orderItemsReserverImageName string
 param orderResItemsFunctionUrlSecretName string
+
 // storage account module
 param storageAccountType string
 
@@ -101,6 +102,7 @@ module acrModule './modules/containerRegistryModule.bicep' = {
 
 module webAppModule './modules/webAppModule.bicep' = {
   name: 'webApp'
+  dependsOn: [ serviceBusModule ]
   params: {
     catalogConnectionSecretRef: sqlModule.outputs.secretCatalogConnStringRef
     identityConnSecretRef: sqlModule.outputs.identityConnSecretRef
@@ -150,3 +152,4 @@ module orderItemsReserverFunctionModule './modules/orderItemsReservFunctionModul
 
 output containerRegistryName string = containerRegistryName
 output webAppName string = webAppName
+output orderResFunName string = orderItemsReserverFunctionModule.outputs.orderResFunctionName

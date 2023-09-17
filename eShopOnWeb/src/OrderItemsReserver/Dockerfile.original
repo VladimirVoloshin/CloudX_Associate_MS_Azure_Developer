@@ -1,16 +1,16 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
+# To run build use
+# docker build -f ".\eShopOnWeb\src\OrderItemsReserver\Dockerfile" --force-rm -t orderitemsreserver --build-arg "BUILD_CONFIGURATION=Debug" ".\eShopOnWeb"
 FROM mcr.microsoft.com/azure-functions/dotnet-isolated:4-dotnet-isolated7.0 AS base
 WORKDIR /home/site/wwwroot
 EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["/eShopOnWeb/Directory.Packages.props", "."]
-COPY ["/eShopOnWeb/src/OrderItemsReserver/OrderItemsReserver.csproj", "src/OrderItemsReserver/"]
+COPY ["Directory.Packages.props", "."]
+COPY ["src/OrderItemsReserver/OrderItemsReserver.csproj", "src/OrderItemsReserver/"]
 RUN dotnet restore "src/OrderItemsReserver/OrderItemsReserver.csproj"
 COPY . .
-WORKDIR "/src/eShopOnWeb/src/OrderItemsReserver"
+WORKDIR "/src/src/OrderItemsReserver"
 RUN dotnet build "OrderItemsReserver.csproj" -c Release -o /app/build
 
 FROM build AS publish

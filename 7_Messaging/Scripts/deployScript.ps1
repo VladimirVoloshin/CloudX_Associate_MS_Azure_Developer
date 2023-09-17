@@ -1,11 +1,12 @@
 $location = 'westeurope'
 $resourceGroupName = 'Messaging7RG'
-$orderItemsReserverImageName = 'ordritemsres'
+$orderItemsReserverImageName = 'orderitemsreserver'
 $imageWebName = 'web1linux'
 $gitRepoUrl = 'https://github.com/VladimirVoloshin/CloudX_Associate_MS_Azure_Developer.git'
 $gitBranch = 'messaging'
 $gitAccessToken = $Env:GITHUB_TOKEN
 $webAppDockerFilePath = 'eShopOnWeb\src\Web\Dockerfile'
+$orderReservFunAppDockerFilePath = 'eShopOnWeb\src\OrderItemsReserver\Dockerfile'
 ################################
 # CREATE RESOURCE GROUP
 ################################
@@ -20,16 +21,15 @@ $result = (az deployment group create `
         --parameters ./7_Messaging/Scripts/deployParameters.json orderItemsReserverImageName=$orderItemsReserverImageName imageWebName=$imageWebName) | ConvertFrom-Json
 $containerRegistryName = $result.properties.outputs.containerRegistryName.value
 $webAppName = $result.properties.outputs.webAppName.value
+$orderResFunName = $result.properties.outputs.orderResFunName.value
 
 ###############################
 #BUILD AND PUSH CONTAINER TO ACR
 ################################
-Set-Location .\eShopOnWeb
 docker build --pull --rm -f "src\OrderItemsReserver\Dockerfile" -t $orderItemsReserverImageName .
 docker tag "$orderItemsReserverImageName" "$containerRegistryName.azurecr.io/$($orderItemsReserverImageName):latest"
 az acr login -n $containerRegistryName
 docker push "$containerRegistryName.azurecr.io/$($orderItemsReserverImageName):latest"
-Set-Location ..
 
 docker build --pull --rm -f "src\Web\Dockerfile" -t $imageWebName .
 docker tag "$imageWebName" "$containerRegistryName.azurecr.io/$($imageWebName):latest"
@@ -47,6 +47,15 @@ az acr task create `
     --file $webAppDockerFilePath `
     --git-access-token $gitAccessToken
 
+az acr task create `
+    --registry $containerRegistryName `
+    --name buildOrderResFunction `
+    --image "$($orderItemsReserverImageName):latest" `
+    --context "$($gitRepoUrl)#$($gitBranch)" `
+    --file $orderReservFunAppDockerFilePath `
+    --git-access-token $gitAccessToken
+
+
 
 ############################################
 # CREATE WEBHOOKS FOR CONTAINERS
@@ -58,5 +67,13 @@ az acr webhook create `
     --actions push `
     --uri $(az webapp deployment container config --name $webAppName --resource-group $resourceGroupName --enable-cd true --query CI_CD_URL --output tsv) `
     --scope "$($imageWebName):latest"
+
+az acr webhook create `
+    --name "$($orderItemsReserverImageName)CD" `
+    --registry $containerRegistryName `
+    --resource-group $resourceGroupName `
+    --actions push `
+    --uri $(az webapp deployment container config --name $orderResFunName --resource-group $resourceGroupName --enable-cd true --query CI_CD_URL --output tsv) `
+    --scope "$($orderItemsReserverImageName):latest"
 
 

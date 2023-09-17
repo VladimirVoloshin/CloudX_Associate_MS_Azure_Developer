@@ -95,16 +95,20 @@ resource orderItemsReserverFunction 'Microsoft.Web/sites@2022-09-01' = {
           value: 'false'
         }
         {
-          name: 'MESSAGING__ORDER_SERVICEBUS__CONNECTION_STRING'
+          name: 'OrderCreatedConnectionString'
           value: serviceBusConnStrRef
         }
         {
-          name: 'MESSAGING__ORDER_SERVICEBUS__ORDER_CREATED_QUEUE'
+          name: 'OrderCreatedQueueName'
           value: serviceBusOrderCreatedQueueName
         }
         {
-          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+          name: 'ApplicationInsights__ConnectionString'
           value: appInsightsConnRef
+        }
+        {
+          name: 'EmailFailureServiceUrl'
+          value: 'https://prod-55.eastus.logic.azure.com:443/workflows/8fcce6a79a754717aaa7e098a43e01a2/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ES9dzq4X8IgPWkdSidbxxFxPskZd8djgft4kyhCoajs'
         }
       ]
       linuxFxVersion: 'DOCKER|${containerRegistryName}.azurecr.io/${imageName}:latest'
@@ -141,3 +145,4 @@ resource orderResItemsFunctionCodeSecret 'Microsoft.KeyVault/vaults/secrets@2021
 }
 
 output orderItemsResFunctionUrlSecretRef string = '@Microsoft.KeyVault(SecretUri=${reference(orderResItemsFunctionUrlSecretName).secretUriWithVersion})'
+output orderResFunctionName string = functionName
