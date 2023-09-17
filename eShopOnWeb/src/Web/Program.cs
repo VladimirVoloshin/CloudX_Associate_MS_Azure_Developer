@@ -21,6 +21,7 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
 Microsoft.eShopWeb.Infrastructure.Dependencies.ConfigureServices(builder.Configuration, builder.Services);
@@ -112,9 +113,12 @@ builder.Services.AddApplicationInsightsTelemetry();
 
 var app = builder.Build();
 
+
 app.Logger.LogInformation("App created...");
 
 app.Logger.LogInformation("Seeding Database...");
+
+app.Logger.LogInformation($"App Insights conn string:{builder.Configuration["ApplicationInsights:ConnectionString"]}");
 
 using (var scope = app.Services.CreateScope())
 {

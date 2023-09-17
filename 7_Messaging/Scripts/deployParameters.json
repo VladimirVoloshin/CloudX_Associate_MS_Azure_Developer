@@ -1,0 +1,66 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentPrefix": {
+      "value": "messaging7"
+    },
+    "acrSku": {
+      "value": "Basic"
+    },
+    "keyVaultKeysPermissions": {
+      "value": ["get", "list"]
+    },
+    "keyVaultSecretsPermissions": {
+      "value": ["get", "list"]
+    },
+    "keyVaultSku": {
+      "value": "standard"
+    },
+    "serverName": {
+      "value": "eShopOnWeb-sql-server"
+    },
+    "catalogDbName": {
+      "value": "CatalogDb"
+    },
+    "identityDBName": {
+      "value": "identity"
+    },
+    "sqlAdminLogin": {
+      "value": "sqlUser"
+    },
+    "sqlAdminPass": {
+      "value": "SuPP3RSecReTP@dMiN@ssw0rd"
+    },
+    "catalogConnectionSecretName": {
+      "value": "CatalogConnectionSecret"
+    },
+    "identityConnectionSecretName": {
+      "value": "identityConnectionSecret"
+    },
+    "webAppSku": {
+      "value": "F1"
+    },
+    "storageAccountType": {
+      "value": "Standard_LRS"
+    },
+    "serviceBusOrderCreatedQueueName": {
+      "value": "ordercreatedqueue"
+    },
+    "serviceBusOrderConnNameSecret": {
+      "value": "servicebusorderconnnamesecret"
+    },
+    "orderResItemsFunctionUrlSecretName": {
+      "value": "orderResItemsFunctionUrl"
+    },
+    "appInsightsConnStrSecretName": {
+      "value": "appInsightsConnStrSecret"
+    },
+    "appInsightsName": {
+      "value": "appInsights"
+    },
+    "appInsightsProjName": {
+      "value": "LogsForWebAppsAndFunctionsApps"
+    }
+  }
+}
