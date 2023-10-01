@@ -7,12 +7,12 @@ param storageAccountName string
 param serviceBusConnStrRef string
 param serviceBusOrderCreatedQueueName string
 param keyVaultName string
-param orderResItemsFunctionUrlSecretName string
 param tenantId string = subscription().tenantId
 param keyVaultKeysPermissions array
 param keyVaultSecretsPermissions array
 param appInsightsConnRef string
 
+var orderResItemsFunctionUrlSecretName = 'orderResItemsFunctionUrl'
 var appServicePlanName = '${functionPrefix}-plan'
 var functionName = '${functionPrefix}-func'
 

@@ -1,7 +1,5 @@
 param location string
 param deploymentPrefix string
-param webAppName string
-param webAppSku string
 param containerRegistryName string
 param imageWebName string
 param serviceBusConnStrRef string
@@ -22,11 +20,13 @@ param keyVaultName string
 @secure()
 param orderItemsResFunctionUrlSecretRef string
 
+var webAppName = '${deploymentPrefix}-web-app'
+
 resource plan 'Microsoft.Web/serverfarms@2022-09-01' = {
   name: '${deploymentPrefix}-web-plan'
   location: location
   sku: {
-    name: webAppSku
+    name: 'F1'
     capacity: 1
   }
   properties: {
@@ -163,3 +163,5 @@ resource containerFileLogging 'Microsoft.Web/sites/config@2022-09-01' = {
     }
   }
 }
+
+output webAppName string = webAppName

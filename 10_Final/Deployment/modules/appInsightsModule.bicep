@@ -1,8 +1,9 @@
 param location string
-param appInsightsName string
-param appInsightsProjName string
 param keyVaultName string
-param appInsightsConnStrSecretName string
+
+var appInsightsName = 'appInsights'
+var appInsightsProjName = 'LogsForWebAppsAndFunctionsApps'
+var appInsightsConnStrSecretName = 'appInsightsConnStrSecret'
 
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: appInsightsName
@@ -14,7 +15,7 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-08-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: appInsightsName
   location: location
   tags: {
@@ -38,7 +39,7 @@ resource keyVaultRef 'Microsoft.KeyVault/vaults@2023-02-01' existing = {
   name: keyVaultName
 }
 
-resource secretAppInsightsConnStringRes 'Microsoft.KeyVault/vaults/secrets@2022-11-01' = {
+resource secretAppInsightsConnStringRes 'Microsoft.KeyVault/vaults/secrets@2023-02-01' = {
   parent: keyVaultRef
   name: appInsightsConnStrSecretName
   properties: {

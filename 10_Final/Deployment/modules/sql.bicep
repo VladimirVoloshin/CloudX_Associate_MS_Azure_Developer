@@ -1,5 +1,6 @@
 param location string = resourceGroup().location
-param serverName string = 'eShopOnWeb-sql-server'
+param deploymentPrefix string
+param serverName string = '${deploymentPrefix}-mssql-${newGuid()}'
 param catalogDbName string = 'CatalogDb'
 param identityDBName string = 'identity'
 param sqlAdminLogin string = 'sqlUser'
@@ -14,16 +15,17 @@ param sqlAdminPass string = 'asjfdjakfhsld@@333S3kdd!!ff'
 var sqlServerUrl = '${serverName}.database.windows.net'
 var sqlSku = 'Basic'
 
-resource sqlServerInstance 'Microsoft.Sql/servers@2023-02-01-preview' = {
+resource sqlServerInstance 'Microsoft.Sql/servers@2022-05-01-preview' = {
   name: serverName
   location: location
   properties: {
     administratorLogin: sqlAdminLogin
     administratorLoginPassword: sqlAdminPass
+    version: '12.0'
   }
 }
 
-resource SQLAllowAllWindowsAzureIps 'Microsoft.Sql/servers/firewallRules@2023-02-01-preview' = {
+resource SQLAllowAllWindowsAzureIps 'Microsoft.Sql/servers/firewallRules@2022-05-01-preview' = {
   name: 'AllowAllWindowsAzureIps'
   parent: sqlServerInstance
   properties: {
@@ -32,21 +34,29 @@ resource SQLAllowAllWindowsAzureIps 'Microsoft.Sql/servers/firewallRules@2023-02
   }
 }
 
-resource catalogDb_database 'Microsoft.Sql/servers/databases@2023-02-01-preview' = {
+resource catalogDb_database 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
   parent: sqlServerInstance
   name: catalogDbName
   location: location
   sku: {
     name: sqlSku
   }
+  properties: {
+    collation: 'SQL_Latin1_General_CP1_CI_AS'
+    zoneRedundant: false
+  }
 }
 
-resource identity_database 'Microsoft.Sql/servers/databases@2023-02-01-preview' = {
+resource identity_database 'Microsoft.Sql/servers/databases@2022-05-01-preview' = {
   parent: sqlServerInstance
   name: identityDBName
   location: location
   sku: {
     name: sqlSku
+  }
+  properties: {
+    collation: 'SQL_Latin1_General_CP1_CI_AS'
+    zoneRedundant: false
   }
 }
 
