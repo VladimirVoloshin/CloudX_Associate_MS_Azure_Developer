@@ -91,6 +91,37 @@ module orderItemsReserverFunctionModule 'modules/orderItemsReservFunctionModule.
   }
 }
 
+// cosomos db module
+module cosmosDbModule 'modules/cosmosDbModule.bicep' = {
+  name: 'cosmosDb'
+  dependsOn: [ keyVaultModule ]
+  params: {
+    deploymentPrefix: deploymentPrefix
+    location: location
+    keyVaultName: keyVaultName
+  }
+}
+
+// // Delivery order processor function module
+param deliveryOrderProcessorImageName string
+module deliveryOrderProcessorFunctionModule 'modules/deliveryOrderProcessorModule.bicep' = {
+  name: 'deliveryOrderProcessorFunction'
+  dependsOn: [ storageAccountModule, acrModule, cosmosDbModule, appInsightsModule ]
+  params: {
+    imageName: deliveryOrderProcessorImageName
+    containerRegistryName: containerRegistryName
+    deploymentPrefix: deploymentPrefix
+    location: location
+    storageAccountName: storageAccountModule.outputs.storageAccountName
+    keyVaultName: keyVaultName
+    keyVaultKeysPermissions: keyVaultKeysPermissions
+    keyVaultSecretsPermissions: keyVaultSecretsPermissions
+    appInsightsConnRef: appInsightsModule.outputs.appInsightsConnRef
+    cosmoDbConnStringRef: cosmosDbModule.outputs.cosmoDbConnStringRef
+    databaseName: cosmosDbModule.outputs.databaseName
+  }
+}
+
 // webApp module
 param imageWebName string
 module webAppModule 'modules/webAppModule.bicep' = {
@@ -113,6 +144,25 @@ module webAppModule 'modules/webAppModule.bicep' = {
   }
 }
 
+// public api module
+param publicApiImageName string
+module publicApiModule 'modules/publicApiModule.bicep' = {
+  name: 'publicApiAppDeployment'
+  dependsOn: [ keyVaultModule ]
+  params: {
+    containerRegistryName: containerRegistryName
+    publicApiImageName: publicApiImageName
+    deploymentPrefix: deploymentPrefix
+    location: location
+    catalogConnString: sqlModule.outputs.secretCatalogConnStringRef
+    identityConnString: sqlModule.outputs.identityConnSecretRef
+    keyVaultName: keyVaultName
+    keyVaultSecretsPermissions: keyVaultSecretsPermissions
+    keyVaultKeysPermissions: keyVaultKeysPermissions
+  }
+}
+
 output containerRegistryName string = containerRegistryName
 output webAppName string = webAppModule.outputs.webAppName
+output publicApiName string = publicApiModule.outputs.publicApiName
 output orderResFunName string = orderItemsReserverFunctionModule.outputs.orderResFunctionName
